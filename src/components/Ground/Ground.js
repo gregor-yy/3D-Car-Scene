@@ -1,21 +1,29 @@
 import React, { useEffect } from "react";
 import { MeshReflectorMaterial } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader, LinearEncoding, RepeatWrapping } from "three";
 
 export const Ground = () => {
+    // две текстурки пола
     const [roughness, normal] = useLoader(TextureLoader, [
         process.env.PUBLIC_URL + "textures/terrain-roughness.jpg",
         process.env.PUBLIC_URL + "textures/terrain-normal.jpg",
     ]);
     useEffect(() => {
         [normal, roughness].forEach((texture) => {
-            texture.wrapS = RepeatWrapping;
-            texture.wrapT = RepeatWrapping;
-            texture.repeat.set(5, 5);
+            texture.wrapS = RepeatWrapping; // повторяющаяся текстура
+            texture.wrapT = RepeatWrapping; // повторяющаяся текстура
+            texture.repeat.set(5, 5); // ограничиваем повторения
         });
         normal.encoding = LinearEncoding;
     }, [normal, roughness]);
+
+    // анимирую движение текстур
+    useFrame((state) => {
+        let elapsed = (-state.clock.getElapsedTime() * 0.68) / 6;
+        normal.offset.set(0, elapsed);
+        roughness.offset.set(0, elapsed);
+    });
     return (
         <mesh rotation-x={-Math.PI * 0.5} castShadow receiveShadow>
             <planeGeometry args={[30, 30]} />
