@@ -76,7 +76,14 @@ function CarShow() {
 
 function App() {
     return (
-        <Suspense fallback={null}>
+        <Suspense
+            fallback={
+                <div className="preloader">
+                    <img src="/car-preloader.gif" alt="preloader" />
+                    <p>Загрузка...</p>
+                </div>
+            }
+        >
             <Canvas shadows>
                 <CarShow />
             </Canvas>
